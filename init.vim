@@ -44,11 +44,11 @@
         Plug 'Shougo/echodoc.vim' 
 
         " Fuzzy find
-        Plug 'junegunn/fzf', {'do': './install --bin'} 
+        Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
         Plug 'junegunn/fzf.vim'
 
-        " C/C++ highlighting
-        Plug 'octol/vim-cpp-enhanced-highlight'
+        " Syntax highlighting
+        Plug 'sheerun/vim-polyglot'
 
     call plug#end()
 """ }}}
@@ -65,6 +65,7 @@
     set scrolloff=5
     set nowrap
     set laststatus=2
+    set signcolumn=yes
 
     set guifont=Hack:h9
 """ }}}
@@ -87,10 +88,31 @@
     set expandtab
     set smarttab
     set backspace=indent,eol,start
+
 """ }}}
 
 """ Key binddings {{{
+    " NerdTree
     map <C-o> :NERDTreeToggle<CR>
+
+    " LanguageClient
+    function SetLSPShortcuts()
+        nnoremap <leader>ld :call LanguageClient#textDocument_definition()<CR>
+        nnoremap <leader>lr :call LanguageClient#textDocument_rename()<CR>
+        nnoremap <leader>lf :call LanguageClient#textDocument_formatting()<CR>
+        nnoremap <leader>lt :call LanguageClient#textDocument_typeDefinition()<CR>
+        nnoremap <leader>lx :call LanguageClient#textDocument_references()<CR>
+        nnoremap <leader>la :call LanguageClient_workspace_applyEdit()<CR>
+        nnoremap <leader>lc :call LanguageClient#textDocument_completion()<CR>
+        nnoremap <leader>lh :call LanguageClient#textDocument_hover()<CR>
+        nnoremap <leader>ls :call LanguageClient_textDocument_documentSymbol()<CR>
+        nnoremap <leader>lm :call LanguageClient_contextMenu()<CR>
+    endfunction()
+
+    augroup LSP
+        autocmd!
+        autocmd FileType cpp,c call SetLSPShortcuts()
+    augroup END 
 """ }}}
 
 """ Custom command {{{
@@ -108,17 +130,20 @@
     let g:indentLine_char = '│'
 
     " Deoplete
-    let g:deoplete#enable_at_startup = 1
-    let g:deoplete#enable_smart_case = 1
-    let g:deoplete#max_list = 10
+    let g:deoplete#enable_at_startup=1
+    let g:deoplete#max_list=10
+    call deoplete#custom#source('LanguageClient', 'max_abbr_width', 0)
+    call deoplete#custom#source('LanguageClient', 'max_menu_width', 0)
 
     " Echodoc
-    let g:echodoc#enable_at_startup = 1
+    let g:echodoc#enable_at_startup=1
+    let g:echodoc#type = 'signature'
 
     " LanguageClient
-    let g:LanguageClient_serverCommands = {
+    let g:LanguageClient_serverCommands={
         \ 'cpp': ['clangd'],
         \ } 
+    
 """ }}}
 
 
