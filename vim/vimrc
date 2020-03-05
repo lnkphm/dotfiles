@@ -1,12 +1,15 @@
 """ Plugin manager {{{
+
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
+
 """ }}}
 
 """ Plugins {{{
+
 call plug#begin('~/.vim/plugged')
 
     " Colorscheme
@@ -28,6 +31,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'Yggdroot/indentLine'
 
 call plug#end()
+
 """ }}}
 
 """ Interface {{{
@@ -35,23 +39,25 @@ call plug#end()
     set background=dark
     silent! colorscheme jellybeans
 
-    set cursorline          " Highline line
+    " set cursorline          " Highline line
     set number              " Show line number
     set numberwidth=5       " Line number width
     set title               " Show filename on title
     set noshowmode          " Hide mode
+    set nowrap
     set scrolloff=5         " Line after cursor
-    set nowrap              " No wrap line
     set laststatus=2        " Always show statusline
 
 """ }}}
 
 """ General settings {{{
 
+    set nocompatible
     filetype plugin indent on
     syntax on
     set encoding=utf-8
     set clipboard=unnamedplus
+    set hidden
 
     set splitbelow
     set splitright
@@ -63,9 +69,14 @@ call plug#end()
     set tabstop=8
     set shiftwidth=4
     set softtabstop=4
+    set shiftround
     set expandtab
     set smarttab
+
     set backspace=indent,eol,start
+
+    set ttyfast
+    set lazyredraw
 
 """ }}}
 
