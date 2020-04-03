@@ -13,9 +13,12 @@ endif
 call plug#begin('~/.local/share/nvim/plugged')
 
     " Colorscheme
+    let g:gruvbox_contrast_dark='hard'
+
     Plug 'nanotech/jellybeans.vim'
     Plug 'chriskempson/base16-vim'
     Plug 'tomasr/molokai' 
+    Plug 'morhetz/gruvbox'
 
     " Statusline
     Plug 'itchyny/lightline.vim'
@@ -30,6 +33,30 @@ call plug#begin('~/.local/share/nvim/plugged')
     " Highlight indent
     Plug 'Yggdroot/indentLine'
 
+    " Highlight syntax
+    Plug 'sheerun/vim-polyglot'
+
+    " Autoclose brackets
+    Plug 'raimondi/delimitmate'
+
+    " Auto Complete
+    if has('nvim')
+        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    else
+        Plug 'Shougo/deoplete.nvim'
+        Plug 'roxma/nvim-yarp'
+        Plug 'roxma/vim-hug-neovim-rpc'
+    endif
+
+    " Show function parameters
+    Plug 'Shougo/echodoc.vim'
+
+    " Language Server
+    Plug 'autozimu/LanguageClient-neovim', {
+        \ 'branch': 'next',
+        \ 'do': 'bash install.sh',
+        \ }
+
 call plug#end()
 
 """ }}}
@@ -37,7 +64,7 @@ call plug#end()
 """ Interface {{{
 
     set background=dark
-    silent! colorscheme jellybeans
+    silent! colorscheme gruvbox
 
     " set cursorline          " Highline line
     set number              " Show line number
@@ -102,6 +129,46 @@ call plug#end()
 
     " Indentline
     let g:indentLine_char = '│'
+
+    " Vim-polygot
+    " C++
+    let g:cpp_class_scope_highlight = 1
+    let g:cpp_member_variable_highlight = 1
+    let g:cpp_class_decl_highlight = 1
+    let g:cpp_posix_standard = 1
+
+    " Deoplete
+    let g:deoplete#enable_at_startup = 1
+
+    " Echodoc
+    let g:echodoc#enable_at_startup = 1
+    let g:echodoc#type = 'signature'
+
+    " LanguageClient
+    let g:LanguageClient_serverCommands = {
+        \ 'python': ['/usr/local/bin/pyls'],
+        \ 'cpp': ['clangd'],
+        \ 'c': ['clangd'],
+        \ }
+    set completefunc=LanguageClient#complete
+
+    function SetLSPShortcuts()
+        nnoremap <leader>ld :call LanguageClient#textDocument_definition()<CR>
+        nnoremap <leader>lr :call LanguageClient#textDocument_rename()<CR>
+        nnoremap <leader>lf :call LanguageClient#textDocument_formatting()<CR>
+        nnoremap <leader>lt :call LanguageClient#textDocument_typeDefinition()<CR>
+        nnoremap <leader>lx :call LanguageClient#textDocument_references()<CR>
+        nnoremap <leader>la :call LanguageClient_workspace_applyEdit()<CR>
+        nnoremap <leader>lc :call LanguageClient#textDocument_completion()<CR>
+        nnoremap <leader>lh :call LanguageClient#textDocument_hover()<CR>
+        nnoremap <leader>ls :call LanguageClient_textDocument_documentSymbol()<CR>
+        nnoremap <leader>lm :call LanguageClient_contextMenu()<CR>
+    endfunction()
+
+    augroup LSP
+        autocmd!
+        autocmd FileType cpp,c call SetLSPShortcuts()
+    augroup END
     
 """ }}}
 
