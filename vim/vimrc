@@ -14,21 +14,15 @@ call plug#begin('~/.vim/plugged')
 
     " Colorscheme
     Plug 'nanotech/jellybeans.vim'
-    Plug 'chriskempson/base16-vim'
-    Plug 'tomasr/molokai' 
 
     " Statusline
     Plug 'itchyny/lightline.vim'
 
-    " File browser
-    Plug 'scrooloose/nerdtree'
-
-    " Fuzzy find
-    Plug 'junegunn/fzf', { 'do': './install --bin' }
-    Plug 'junegunn/fzf.vim'
-
     " Highlight indent
     Plug 'Yggdroot/indentLine'
+
+    " Autoclose brackets
+    Plug 'raimondi/delimitmate'
 
 call plug#end()
 
