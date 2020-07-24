@@ -13,12 +13,12 @@ endif
 call plug#begin('~/.local/share/nvim/plugged')
 
     " Colorscheme
-    let g:gruvbox_contrast_dark='hard'
-
     Plug 'nanotech/jellybeans.vim'
     Plug 'chriskempson/base16-vim'
     Plug 'tomasr/molokai' 
     Plug 'morhetz/gruvbox'
+    let g:gruvbox_contrast_dark='hard'
+    Plug 'arcticicestudio/nord-vim'
 
     " Statusline
     Plug 'itchyny/lightline.vim'
@@ -39,7 +39,10 @@ call plug#begin('~/.local/share/nvim/plugged')
     " Autoclose brackets
     Plug 'raimondi/delimitmate'
 
-    " Auto Complete
+    " Comment
+    Plug 'preservim/nerdcommenter'
+
+    " Autocomplete
     if has('nvim')
         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
     else
@@ -56,6 +59,11 @@ call plug#begin('~/.local/share/nvim/plugged')
         \ 'branch': 'next',
         \ 'do': 'bash install.sh',
         \ }
+    
+    " Autocomplete sources
+    Plug 'Shougo/neco-vim'
+    Plug 'Shougo/neco-syntax'
+
 
 call plug#end()
 
@@ -64,9 +72,9 @@ call plug#end()
 """ Interface {{{
 
     set background=dark
+    " set termguicolors
     silent! colorscheme gruvbox
 
-    " set cursorline          " Highline line
     set number              " Show line number
     set numberwidth=5       " Line number width
     set title               " Show filename on title
@@ -124,11 +132,18 @@ call plug#end()
 
     " Lightline
     let g:lightline = {
-        \ 'colorscheme': 'jellybeans',
+        \ 'colorscheme': 'Tomorrow_Night',
         \ }
 
     " Indentline
     let g:indentLine_char = '│'
+
+    " NERDTree
+    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+    "DelimitMate
+    let g:delimitMate_expand_cr = 1
+    let g:delimitMate_expand_space = 1
 
     " Vim-polygot
     " C++
@@ -137,8 +152,29 @@ call plug#end()
     let g:cpp_class_decl_highlight = 1
     let g:cpp_posix_standard = 1
 
+    " NERCCommenter
+    let g:NERDSpaceDelims = 1
+    let g:NERDDefaultAlign = 'left'
+    let g:NERDTrimTrailingWhitespace = 1
+
     " Deoplete
     let g:deoplete#enable_at_startup = 1
+    call deoplete#custom#option({
+    \ 'auto_complete_delay': 200,
+    \ 'smart_case': v:true,
+    \ 'max_list': 10,
+    \ })
+    call deoplete#custom#source('_', 'max_abbr_width', 0)
+    call deoplete#custom#source('_', 'max_menu_width', 0)
+
+    set completeopt+=noselect
+    call deoplete#custom#option('omni_patterns', {
+    \ 'ruby': ['[^. *\t]\.\w*', '[a-zA-Z_]\w*::'],
+    \ 'java': '[^. *\t]\.\w*',
+    \ 'html': ['<', '</', '<[^>]*\s[[:alnum:]-]*'],
+    \ 'xhtml': ['<', '</', '<[^>]*\s[[:alnum:]-]*'],
+    \ 'xml': ['<', '</', '<[^>]*\s[[:alnum:]-]*'],
+    \ })
 
     " Echodoc
     let g:echodoc#enable_at_startup = 1
@@ -146,9 +182,16 @@ call plug#end()
 
     " LanguageClient
     let g:LanguageClient_serverCommands = {
-        \ 'python': ['/usr/local/bin/pyls'],
-        \ 'cpp': ['clangd'],
-        \ 'c': ['clangd'],
+        \ 'python': ['/usr/bin/pyls'],
+        \ 'cpp': ['clangd', '-header-insertion=never'],
+        \ 'c': ['clangd', '-header-insertion=never'],
+        \ 'javascript': ['javascript-typescript-stdio'],
+        \ 'typescript': ['javascript-typescript-stdio'],
+        \ }
+
+    let g:LanguageClient_rootMarkers = {
+        \ 'javascript': ['jsconfig.json'],
+        \ 'typescript': ['tsconfig.json'],
         \ }
     set completefunc=LanguageClient#complete
 
