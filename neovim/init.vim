@@ -14,11 +14,7 @@ call plug#begin('~/.local/share/nvim/plugged')
 
     " Colorscheme
     Plug 'nanotech/jellybeans.vim'
-    Plug 'chriskempson/base16-vim'
-    Plug 'tomasr/molokai' 
     Plug 'morhetz/gruvbox'
-    let g:gruvbox_contrast_dark='hard'
-    Plug 'arcticicestudio/nord-vim'
 
     " Statusline
     Plug 'itchyny/lightline.vim'
@@ -36,59 +32,19 @@ call plug#begin('~/.local/share/nvim/plugged')
     " Highlight syntax
     Plug 'sheerun/vim-polyglot'
 
-    " Autoclose brackets
-    Plug 'raimondi/delimitmate'
-
     " Comment
     Plug 'preservim/nerdcommenter'
 
-    " Autocomplete
-    if has('nvim')
-        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-    else
-        Plug 'Shougo/deoplete.nvim'
-        Plug 'roxma/nvim-yarp'
-        Plug 'roxma/vim-hug-neovim-rpc'
-    endif
-
-    " Show function parameters
-    Plug 'Shougo/echodoc.vim'
-
-    " Language Server
-    Plug 'autozimu/LanguageClient-neovim', {
-        \ 'branch': 'next',
-        \ 'do': 'bash install.sh',
-        \ }
-    
-    " Autocomplete sources
-    Plug 'Shougo/neco-vim'
-    Plug 'Shougo/neco-syntax'
-
+    " Intellisense
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
 
 """ }}}
 
-""" Interface {{{
-
-    set background=dark
-    " set termguicolors
-    silent! colorscheme gruvbox
-
-    set number              " Show line number
-    set numberwidth=5       " Line number width
-    set title               " Show filename on title
-    set noshowmode          " Hide mode
-    set nowrap              " No wrap line
-    set laststatus=2        " Always show statusline
-    set scrolloff=5         " Line after cursor
-
-""" }}}
-
-""" General settings {{{
+""" General {{{
 
     filetype plugin indent on
-    syntax on
     set encoding=utf-8
     set clipboard=unnamedplus
     set hidden
@@ -98,6 +54,8 @@ call plug#end()
     set foldmethod=marker
     set confirm
     set noautowrite
+    set nobackup
+    set nowritebackup
 
     set autoindent
     set tabstop=8
@@ -109,6 +67,26 @@ call plug#end()
 
     set backspace=indent,eol,start
 
+    set shortmess+=c
+    set updatetime=300
+""" }}}
+
+""" Interface {{{
+
+    set background=dark
+    " let g:gruvbox_contrast_dark='hard'
+    syntax enable
+    colorscheme jellybeans
+
+    set number              " Show line number
+    set numberwidth=5       " Line number width
+    set title               " Show filename on title
+    set noshowmode          " Hide mode
+    set nowrap              " No wrap line
+    set laststatus=2        " Always show status line
+    set scrolloff=5         " Number of lines after cursor
+    set signcolumn=yes
+
 """ }}}
 
 """ Key binddings {{{
@@ -116,8 +94,64 @@ call plug#end()
     " Leader
     let mapleader = " "
 
+    " Navigation
+    tnoremap <A-h> <C-\><C-n><C-w>h
+    tnoremap <A-j> <C-\><C-n><C-w>j
+    tnoremap <A-k> <C-\><C-n><C-w>k
+    tnoremap <A-l> <C-\><C-n><C-w>l
+    nnoremap <A-h> <C-w>h
+    nnoremap <A-j> <C-w>j
+    nnoremap <A-k> <C-w>k
+    nnoremap <A-l> <C-w>l
+
+    " Terminal
+    tnoremap <Esc> <C-\><C-n>
+    au BufEnter * if &buftype == 'terminal' | :startinsert | endif
+    function! OpenTerminal()
+        split term://bash
+        resize 5
+    endfunction
+    nnoremap <leader>t :call OpenTerminal()<CR>
+
     " NerdTree
     map <leader>o :NERDTreeToggle<CR>
+
+    " coc.nvim
+    " Use tab for trigger completion
+    inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+    function! s:check_back_space() abort
+        let col = col('.') - 1
+        return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+
+    " Use <CR> to confirm completion
+    if exists('*complete_info')
+        inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+    else
+        inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+    endif
+
+    " nmap <silent> [g <Plug>(coc-diagnostic-prev)
+    " nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+    nmap <silent> <leader>gd <Plug>(coc-definition)
+    nmap <silent> <leader>gy <Plug>(coc-type-definition)
+    nmap <silent> <leader>gi <Plug>(coc-implementation)
+    nmap <silent> <leader>gr <Plug>(coc-references)
+
+    nnoremap <silent> <leader>d :call <SID>show_documentation()<CR>
+    function! s:show_documentation()
+        if (index(['vim','help'], &filetype) >= 0)
+            execute 'h '.expand('<cword>')
+        else
+            call CocAction('doHover')
+        endif
+    endfunction
 
 """ }}}
 
@@ -132,8 +166,16 @@ call plug#end()
 
     " Lightline
     let g:lightline = {
-        \ 'colorscheme': 'Tomorrow_Night',
+        \ 'colorscheme': 'jellybeans',
+        \ 'active': {
+        \   'left': [ [ 'mode', 'paste' ],
+        \             [ 'cocstatus', 'readonly', 'filename', 'modified' ] ]
+        \ },
+        \ 'component_function': {
+        \   'cocstatus': 'coc#status'
+        \ },
         \ }
+    autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
 
     " Indentline
     let g:indentLine_char = '│'
@@ -141,12 +183,7 @@ call plug#end()
     " NERDTree
     autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
-    "DelimitMate
-    let g:delimitMate_expand_cr = 1
-    let g:delimitMate_expand_space = 1
-
     " Vim-polygot
-    " C++
     let g:cpp_class_scope_highlight = 1
     let g:cpp_member_variable_highlight = 1
     let g:cpp_class_decl_highlight = 1
@@ -157,61 +194,5 @@ call plug#end()
     let g:NERDDefaultAlign = 'left'
     let g:NERDTrimTrailingWhitespace = 1
 
-    " Deoplete
-    let g:deoplete#enable_at_startup = 1
-    call deoplete#custom#option({
-    \ 'auto_complete_delay': 200,
-    \ 'smart_case': v:true,
-    \ 'max_list': 10,
-    \ })
-    call deoplete#custom#source('_', 'max_abbr_width', 0)
-    call deoplete#custom#source('_', 'max_menu_width', 0)
-
-    set completeopt+=noselect
-    call deoplete#custom#option('omni_patterns', {
-    \ 'ruby': ['[^. *\t]\.\w*', '[a-zA-Z_]\w*::'],
-    \ 'java': '[^. *\t]\.\w*',
-    \ 'html': ['<', '</', '<[^>]*\s[[:alnum:]-]*'],
-    \ 'xhtml': ['<', '</', '<[^>]*\s[[:alnum:]-]*'],
-    \ 'xml': ['<', '</', '<[^>]*\s[[:alnum:]-]*'],
-    \ })
-
-    " Echodoc
-    let g:echodoc#enable_at_startup = 1
-    let g:echodoc#type = 'signature'
-
-    " LanguageClient
-    let g:LanguageClient_serverCommands = {
-        \ 'python': ['/usr/bin/pyls'],
-        \ 'cpp': ['clangd', '-header-insertion=never'],
-        \ 'c': ['clangd', '-header-insertion=never'],
-        \ 'javascript': ['javascript-typescript-stdio'],
-        \ 'typescript': ['javascript-typescript-stdio'],
-        \ }
-
-    let g:LanguageClient_rootMarkers = {
-        \ 'javascript': ['jsconfig.json'],
-        \ 'typescript': ['tsconfig.json'],
-        \ }
-    set completefunc=LanguageClient#complete
-
-    function SetLSPShortcuts()
-        nnoremap <leader>ld :call LanguageClient#textDocument_definition()<CR>
-        nnoremap <leader>lr :call LanguageClient#textDocument_rename()<CR>
-        nnoremap <leader>lf :call LanguageClient#textDocument_formatting()<CR>
-        nnoremap <leader>lt :call LanguageClient#textDocument_typeDefinition()<CR>
-        nnoremap <leader>lx :call LanguageClient#textDocument_references()<CR>
-        nnoremap <leader>la :call LanguageClient_workspace_applyEdit()<CR>
-        nnoremap <leader>lc :call LanguageClient#textDocument_completion()<CR>
-        nnoremap <leader>lh :call LanguageClient#textDocument_hover()<CR>
-        nnoremap <leader>ls :call LanguageClient_textDocument_documentSymbol()<CR>
-        nnoremap <leader>lm :call LanguageClient_contextMenu()<CR>
-    endfunction()
-
-    augroup LSP
-        autocmd!
-        autocmd FileType cpp,c call SetLSPShortcuts()
-    augroup END
-    
 """ }}}
 
