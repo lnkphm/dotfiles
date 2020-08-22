@@ -15,6 +15,7 @@ call plug#begin('~/.local/share/nvim/plugged')
     " Colorscheme
     Plug 'nanotech/jellybeans.vim'
     Plug 'morhetz/gruvbox'
+    Plug 'sickill/vim-monokai'
 
     " Statusline
     Plug 'itchyny/lightline.vim'
@@ -56,6 +57,7 @@ call plug#end()
     set noautowrite
     set nobackup
     set nowritebackup
+    set autoread
 
     set autoindent
     set tabstop=8
@@ -153,12 +155,18 @@ call plug#end()
         endif
     endfunction
 
+    vmap <leader>f  <Plug>(coc-format-selected)
+    nmap <leader>f  <Plug>(coc-format-selected)
+
 """ }}}
 
 """ Custom command {{{
 
     " Auto close NERDTree window
     autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif 
+
+    " Prettier
+    command! -nargs=0 Prettier :CocCommand prettier.formatFile
 
 """ }}}
 
