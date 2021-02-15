@@ -1,9 +1,9 @@
 """ Plugin manager {{{
 
 if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 """ }}}
@@ -28,22 +28,6 @@ call plug#end()
 
 """ }}}
 
-""" Interface {{{
-
-    set background=dark
-    silent! colorscheme jellybeans
-
-    " set cursorline          " Highline line
-    set number              " Show line number
-    set numberwidth=5       " Line number width
-    set title               " Show filename on title
-    set noshowmode          " Hide mode
-    set nowrap
-    set scrolloff=5         " Line after cursor
-    set laststatus=2        " Always show statusline
-
-""" }}}
-
 """ General settings {{{
 
     set nocompatible
@@ -55,6 +39,7 @@ call plug#end()
 
     set splitbelow
     set splitright
+    
     set foldmethod=marker
     set confirm
     set noautowrite
@@ -74,20 +59,29 @@ call plug#end()
 
 """ }}}
 
+""" Interface {{{
+
+    set background=dark
+    silent! colorscheme jellybeans
+
+    set number              " Show line number
+    set numberwidth=5       " Line number width
+    set title               " Show filename on title
+    set noshowmode          " Hide mode
+    set nowrap
+    set scrolloff=5         " Line after cursor
+    set laststatus=2        " Always show statusline
+
+""" }}}
+
 """ Key binddings {{{
 
     " Leader
     let mapleader = " "
 
-    " NerdTree
-    map <leader>o :NERDTreeToggle<CR>
-
 """ }}}
 
 """ Custom command {{{
-
-    " Auto close NERDTree window
-    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif 
 
 """ }}}
 
