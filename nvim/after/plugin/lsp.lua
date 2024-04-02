@@ -26,6 +26,39 @@ require('lspconfig').lua_ls.setup({
     },
 })
 
+require("lspconfig").terraformls.setup({
+    init_options = {
+        terraform = {
+            path = "/usr/bin/terraform",
+        }
+    }
+})
+
+require("lspconfig").yamlls.setup({
+    settings = {
+        yaml = {
+            format = {
+                enable = true,
+                singleQuote = true,
+                printWidth = 120,
+            },
+            hover = true,
+            completion = true,
+            validate = false,
+            schemas = {
+                kubernetes = "*.{yml,yaml}",
+                ["https://json.schemastore.org/github-action"] = ".github/action.{yml,yaml}",
+                ["https://json.schemastore.org/ansible-playbook"] = "*play*.{yml,yaml}",
+                ["https://json.schemastore.org/gitlab-ci"] = "*gitlab-ci*.{yml,yaml}",
+                ["https://json.schemastore.org/kustomization"] = "kustomization.{yml,yaml}",
+                ["https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec"] = "*docker-compose*.{yml,yaml}",
+                ["http://json.schemastore.org/chart"] = "Chart.{yml,yaml}",
+
+            }
+        }
+    }
+})
+
 -- Mason
 require('mason').setup({
     ui = {

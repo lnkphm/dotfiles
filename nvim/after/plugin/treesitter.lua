@@ -1,5 +1,5 @@
-require 'nvim-treesitter.configs'.setup {
-    ensure_installed = { 'c', 'lua', 'vim', 'vimdoc', 'query' },
+require('nvim-treesitter.configs').setup({
+    ensure_installed = { 'c', 'lua', 'vim', 'vimdoc', 'query', 'yaml' },
     sync_install = false,
     auto_install = true,
 
@@ -7,4 +7,8 @@ require 'nvim-treesitter.configs'.setup {
         enable = true,
         additional_vim_regex_highlighting = false,
     },
-}
+
+    indent = {
+        enable = true
+    },
+})

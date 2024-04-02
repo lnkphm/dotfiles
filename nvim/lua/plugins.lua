@@ -21,8 +21,9 @@ return {
         }
     },
 
-    -- Colorscheme (Github)
+    -- Colorscheme
     { 'projekt0n/github-nvim-theme' },
+    { 'ellisonleao/gruvbox.nvim' },
 
     -- Icons
     { 'nvim-tree/nvim-web-devicons' },
@@ -73,5 +74,12 @@ return {
     { 'mfussenegger/nvim-lint' },
 
     -- Formatter
-    { 'mhartington/formatter.nvim' }
+    { 'mhartington/formatter.nvim' },
+
+    -- Diagnostics
+    {
+        "folke/trouble.nvim",
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        opts = {},
+    }
 }
