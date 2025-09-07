@@ -60,3 +60,11 @@ vim.opt.backspace = 'indent,eol,start'
 
 -- Hightlight current line
 vim.opt.cursorline = true
+
+-- Disable netrw
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- Enable 24bit color
+vim.opt.termguicolors = true
+
