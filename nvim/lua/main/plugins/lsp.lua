@@ -25,25 +25,27 @@ function user.on_attach()
 end
 
 return {
+    -- mason
     {
         'williamboman/mason.nvim',
+        lazy = false,
         opts = {
             ui = {
                 border = 'rounded'
             }
         }
     },
+
+    -- nvim-lspconfig
     {
         'neovim/nvim-lspconfig',
         dependencies = {
             { 'williamboman/mason-lspconfig.nvim' },
             { 'hrsh7th/cmp-nvim-lsp' },
-            { 'onsails/lspkind.nvim' },
         },
+        event = {'BufReadPre', 'BufNewFile'},
         config = function()
-            local lspconfig = require('lspconfig')
             local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
-
             local group = vim.api.nvim_create_augroup('lsp_cmds', {clear = true})
 
             vim.api.nvim_create_autocmd('LspAttach', {
@@ -56,36 +58,56 @@ return {
                 ensure_installed = {
                     'lua_ls',
                 },
-                handlers = {
-                    function(server)
-                        lspconfig[server].setup({
-                        capabilities = lsp_capabilities,
-                        })
-                    end,
-                    ['lua_ls'] = function()
-                        require('plugins.lsp.lua_ls')
-                    end
+            })
+
+            vim.lsp.config('*', {
+                capabilities = lsp_capabilities,
+            })
+
+            vim.lsp.config('lua_ls', {
+                settings = {
+                    Lua = {
+                        runtime = {
+                            version = 'LuaJIT',
+                        },
+                        diagnostics = {
+                            globals = {'vim'}
+                        },
+                        workspace = {
+                            checkThirdParty = false
+                        },
+                        telemetry = {
+                            enable = false
+                        },
+                    }
                 }
             })
         end
 
     },
+
+    -- nvim-cmp
     {
         'hrsh7th/nvim-cmp',
         dependencies = {
             { 'hrsh7th/cmp-buffer' },
             { 'hrsh7th/cmp-path' },
             { 'L3MON4D3/LuaSnip' },
+            { 'windwp/nvim-autopairs' },
+            { 'onsails/lspkind.nvim' },
         },
         config = function()
             vim.opt.completeopt = {'menu', 'menuone', 'noselect'}
 
             local cmp = require('cmp')
+            local cmp_autopairs = require('nvim-autopairs.completion.cmp')
             local luasnip = require('luasnip')
 
             require('luasnip.loaders.from_vscode').lazy_load()
 
             local select_opts = {behavior = cmp.SelectBehavior.Select}
+
+            cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
 
             -- See :help cmp-config
             cmp.setup({
