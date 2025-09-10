@@ -67,4 +67,3 @@ vim.g.loaded_netrwPlugin = 1
 
 -- Enable 24bit color
 vim.opt.termguicolors = true
-

@@ -3,4 +3,3 @@ return {
         'numToStr/Comment.nvim',
     },
 }
-

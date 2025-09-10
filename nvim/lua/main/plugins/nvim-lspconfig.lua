@@ -2,7 +2,7 @@ local user = {}
 
 function user.on_attach()
     local bufmap = function(mode, lhs, rhs)
-        local opts = {buffer = true}
+        local opts = { buffer = true }
         vim.keymap.set(mode, lhs, rhs, opts)
     end
 
@@ -14,7 +14,7 @@ function user.on_attach()
     bufmap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>')
     bufmap('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>')
     bufmap('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>')
-    bufmap({'n', 'x'}, '<F3>', '<cmd>lua vim.lsp.buf.format({async = true})<cr>')
+    bufmap({ 'n', 'x' }, 'gq', '<cmd>lua vim.lsp.buf.format({async = true})<cr>')
     bufmap('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>')
     bufmap('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<cr>')
     bufmap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>')
@@ -24,9 +24,9 @@ end
 return {
     {
         'neovim/nvim-lspconfig',
-        event = {'BufReadPre', 'BufNewFile'},
+        event = { 'BufReadPre', 'BufNewFile' },
         config = function()
-            local group = vim.api.nvim_create_augroup('lsp_cmds', {clear = true})
+            local group = vim.api.nvim_create_augroup('lsp_cmds', { clear = true })
 
             vim.api.nvim_create_autocmd('LspAttach', {
                 group = group,
@@ -41,7 +41,7 @@ return {
                             version = 'LuaJIT',
                         },
                         diagnostics = {
-                            globals = {'vim'}
+                            globals = { 'vim' }
                         },
                         workspace = {
                             checkThirdParty = false
@@ -55,4 +55,3 @@ return {
         end,
     },
 }
-
