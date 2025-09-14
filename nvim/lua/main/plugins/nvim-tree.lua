@@ -5,13 +5,27 @@ return {
     dependencies = {
         "nvim-tree/nvim-web-devicons",
     },
-    config = function()
-        require("nvim-tree").setup({
-            update_focused_file = {
-                enable = true,
-            }
-        })
-        vim.keymap.set('n', '<leader>fp', ':NvimTreeOpen<CR>')
-        vim.keymap.set('n', '<leader>fP', ':NvimTreeToggle<CR>')
-    end,
+    opts = {
+        update_focused_file = {
+            enable = true,
+        }
+    },
+    keys = {
+        {
+            "<leader>fp",
+            function()
+                require("nvim-tree.api").tree.open()
+            end,
+            mode = { "n" },
+            desc = "Open file explorer",
+        },
+        {
+            "<leader>fP",
+            function()
+                require("nvim-tree.api").tree.close()
+            end,
+            mode = { "n" },
+            desc = "Close file explorer",
+        },
+    },
 }
