@@ -33,25 +33,6 @@ return {
                 desc = 'LSP actions',
                 callback = user.on_attach
             })
-
-            vim.lsp.config('lua_ls', {
-                settings = {
-                    Lua = {
-                        runtime = {
-                            version = 'LuaJIT',
-                        },
-                        diagnostics = {
-                            globals = { 'vim' }
-                        },
-                        workspace = {
-                            checkThirdParty = false
-                        },
-                        telemetry = {
-                            enable = false
-                        },
-                    }
-                }
-            })
         end,
     },
 }
